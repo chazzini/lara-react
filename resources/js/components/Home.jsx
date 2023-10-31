@@ -1,0 +1,19 @@
+import React from "react";
+
+
+export default  function Home()
+{
+    return (
+        <div className="row justify-content-center">
+        <div className="col-md-8">
+            <div className="card">
+                <div className="card-header">Home</div>
+
+                <div className="card-body">
+                        Page generated with react;
+                </div>
+            </div>
+        </div>
+    </div>
+    );
+}
