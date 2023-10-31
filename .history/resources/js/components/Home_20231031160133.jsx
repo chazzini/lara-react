@@ -42,12 +42,8 @@ class Home extends Component {
         ));
     }
 
-    navigatePaginator(url) {
-        if (url) {
-            const fullUrl = new URL(url);
-            const page = fullUrl.searchParams.get("page");
-            this.fetchPosts(page);
-        }
+    navigatePaginator(event) {
+        console.log(event.target.attributes.url);
     }
 
     renderPaginatorLinks() {
@@ -63,8 +59,9 @@ class Home extends Component {
                         >
                             <a
                                 dangerouslySetInnerHTML={{ __html: link.label }}
-                                onClick={() => this.navigatePaginator(link.url)}
+                                onClick={this.navigatePaginator}
                                 className="page-link"
+                                url={link.url}
                             ></a>
                         </li>
                     ))}

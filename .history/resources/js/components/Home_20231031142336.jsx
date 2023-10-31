@@ -9,10 +9,10 @@ class Home extends Component {
         };
     }
 
-    fetchPosts(page = 1) {
-        axios.get("/api/posts/", { params: { page } }).then((response) =>
+    fetchPosts() {
+        axios.get("/api/posts/").then((response) =>
             this.setState({
-                posts: response.data,
+                posts: response.data.data,
             })
         );
     }
@@ -22,8 +22,8 @@ class Home extends Component {
     }
 
     renderPosts() {
-        return this.state.posts.data.map((post) => (
-            <tr key={post.id}>
+        return this.state.posts.map((post) => (
+            <tr>
                 <td>{post.id}</td>
                 <td>
                     <p className="fw-normal mb-1">{post.title}</p>
@@ -40,37 +40,6 @@ class Home extends Component {
                 </td>
             </tr>
         ));
-    }
-
-    navigatePaginator(url) {
-        if (url) {
-            const fullUrl = new URL(url);
-            const page = fullUrl.searchParams.get("page");
-            this.fetchPosts(page);
-        }
-    }
-
-    renderPaginatorLinks() {
-        return (
-            <nav aria-label="Page navigation example">
-                <ul className="pagination">
-                    {this.state.posts.meta.links.map((link, index) => (
-                        <li
-                            key={index}
-                            className={`page-item, ${
-                                link.active ? "active" : ""
-                            }`}
-                        >
-                            <a
-                                dangerouslySetInnerHTML={{ __html: link.label }}
-                                onClick={() => this.navigatePaginator(link.url)}
-                                className="page-link"
-                            ></a>
-                        </li>
-                    ))}
-                </ul>
-            </nav>
-        );
     }
 
     render() {
@@ -91,13 +60,8 @@ class Home extends Component {
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    {this.state.posts.data &&
-                                        this.renderPosts()}
-                                </tbody>
+                                <tbody>{this.renderPosts()}</tbody>
                             </table>
-                            {this.state.posts.meta?.links &&
-                                this.renderPaginatorLinks()}
                         </div>
                     </div>
                 </div>

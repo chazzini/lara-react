@@ -43,9 +43,10 @@ class Home extends Component {
     }
 
     navigatePaginator(url) {
-        if (url) {
-            const fullUrl = new URL(url);
-            const page = fullUrl.searchParams.get("page");
+        console.log(url);
+        const fullUrl = new URL(url);
+        const page = fullUrl.searchParams.get("page");
+        if (page > 0) {
             this.fetchPosts(page);
         }
     }

@@ -14,7 +14,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        return PostResource::collection(Post::paginate(10));
+        return PostResource::collection(Post::all());
     }
 
     /**
@@ -28,9 +28,9 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Post $post)
+    public function show(string $id)
     {
-        return new PostResource($post);
+        //
     }
 
     /**

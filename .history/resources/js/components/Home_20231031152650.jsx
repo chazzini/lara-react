@@ -23,7 +23,7 @@ class Home extends Component {
 
     renderPosts() {
         return this.state.posts.data.map((post) => (
-            <tr key={post.id}>
+            <tr>
                 <td>{post.id}</td>
                 <td>
                     <p className="fw-normal mb-1">{post.title}</p>
@@ -42,35 +42,24 @@ class Home extends Component {
         ));
     }
 
-    navigatePaginator(url) {
-        if (url) {
-            const fullUrl = new URL(url);
-            const page = fullUrl.searchParams.get("page");
-            this.fetchPosts(page);
-        }
-    }
-
-    renderPaginatorLinks() {
-        return (
-            <nav aria-label="Page navigation example">
-                <ul className="pagination">
-                    {this.state.posts.meta.links.map((link, index) => (
-                        <li
-                            key={index}
-                            className={`page-item, ${
-                                link.active ? "active" : ""
-                            }`}
-                        >
-                            <a
-                                dangerouslySetInnerHTML={{ __html: link.label }}
-                                onClick={() => this.navigatePaginator(link.url)}
-                                className="page-link"
-                            ></a>
-                        </li>
-                    ))}
-                </ul>
-            </nav>
-        );
+    renderPagination() {
+        return;
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                <li class="page-item">
+                    <a class="page-link" href="#">
+                        Previous
+                    </a>
+                </li>
+                {this.state.posts.data.links((link) => (
+                    <li class="page-item">
+                        <a class="page-link" href="#">
+                            Previous
+                        </a>
+                    </li>
+                ))}
+            </ul>
+        </nav>;
     }
 
     render() {
@@ -91,13 +80,8 @@ class Home extends Component {
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    {this.state.posts.data &&
-                                        this.renderPosts()}
-                                </tbody>
+                                <tbody>{this.renderPosts()}</tbody>
                             </table>
-                            {this.state.posts.meta?.links &&
-                                this.renderPaginatorLinks()}
                         </div>
                     </div>
                 </div>
