@@ -29,6 +29,7 @@ class Home extends Component {
                     <p className="fw-normal mb-1">{post.title}</p>
                 </td>
                 <td>{post.content}</td>
+                <td>{post.category.name}</td>
                 <td>{post.created_at}</td>
                 <td>
                     <button
@@ -49,10 +50,18 @@ class Home extends Component {
             this.fetchPosts(page);
         }
     }
+    renderPaginator() {
+        return (
+            <p>
+                showing page {this.state.posts.meta.current_page} out of{" "}
+                {this.state.posts.meta.last_page}
+            </p>
+        );
+    }
 
     renderPaginatorLinks() {
         return (
-            <nav aria-label="Page navigation example">
+            <nav aria-label="Page navigation example ">
                 <ul className="pagination">
                     {this.state.posts.meta.links.map((link, index) => (
                         <li
@@ -87,6 +96,7 @@ class Home extends Component {
                                         <th>Name</th>
                                         <th>Title</th>
                                         <th>Content</th>
+                                        <th>Category</th>
                                         <th>Created At</th>
                                         <th>Actions</th>
                                     </tr>
@@ -96,8 +106,16 @@ class Home extends Component {
                                         this.renderPosts()}
                                 </tbody>
                             </table>
-                            {this.state.posts.meta?.links &&
-                                this.renderPaginatorLinks()}
+                            <div className="row mt-3">
+                                <div className="col-md-4">
+                                    {this.state.posts?.meta &&
+                                        this.renderPaginator()}
+                                </div>
+                                <div className="col-md-8 d-flex justify-content-end">
+                                    {this.state.posts.meta?.links &&
+                                        this.renderPaginatorLinks()}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
