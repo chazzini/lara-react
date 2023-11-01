@@ -1,28 +1,42 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 const Layout = (props) => {
     return (
         <>
             <nav className="navbar navbar-expand-md navbar-light bg-white shadow-sm">
                 <div className="container">
-                    <Link to={"/"} className="navbar-brand">
+                    <NavLink to={"/"} className="navbar-brand">
                         React Laravel App
-                    </Link>
+                    </NavLink>
 
                     <div
                         className="collapse navbar-collapse"
                         id="navbarSupportedContent"
                     >
                         <ul className="navbar-nav ">
-                            <li class="nav-item active">
-                                <Link className="nav-link" to={"/"}>
+                            <li className="nav-item active">
+                                <NavLink
+                                    className={({ isActive }) =>
+                                        isActive
+                                            ? "active nav-link"
+                                            : "nav-link"
+                                    }
+                                    to={"/"}
+                                >
                                     Home
-                                </Link>
+                                </NavLink>
                             </li>
-                            <li class="nav-item active">
-                                <Link className="nav-link" to={"/post/create"}>
+                            <li className="nav-item active">
+                                <NavLink
+                                    className={({ isActive }) =>
+                                        isActive
+                                            ? "active nav-link"
+                                            : "nav-link"
+                                    }
+                                    to={"/post/create"}
+                                >
                                     Create Post
-                                </Link>
+                                </NavLink>
                             </li>
                         </ul>
                     </div>
