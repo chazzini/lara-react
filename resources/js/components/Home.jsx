@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Layout from "./Pages/layout/Layout";
 
 class Home extends Component {
     constructor(props) {
@@ -187,82 +188,65 @@ class Home extends Component {
 
     render() {
         return (
-            <div className="row justify-content-center">
-                <div className="col-md-12">
-                    <div className="card container">
-                        <div className="card-header row">
-                            <div className="col-md-4">
-                                {this.state.categories &&
-                                    this.renderCategories()}
-                            </div>
+            <Layout header={this.state.categories && this.renderCategories()}>
+                <div className="card-body">
+                    <table className="table align-middle mb-0 bg-white">
+                        <thead className="bg-light">
+                            <tr>
+                                <th>
+                                    <div
+                                        onClick={() => this.updateOrder("id")}
+                                        className="btn-group"
+                                        role="group"
+                                    >
+                                        <button
+                                            type="button"
+                                            className="btn btn-xs btn-link py-0 pl-0 pr-1"
+                                        >
+                                            ID
+                                        </button>
+                                        {this.orderbyColumnIcon("id")}
+                                    </div>
+                                </th>
+                                <th>
+                                    <div
+                                        onClick={() =>
+                                            this.updateOrder("title")
+                                        }
+                                        className="btn-group"
+                                        role="group"
+                                    >
+                                        <button
+                                            type="button"
+                                            className="btn btn-xs btn-link py-0 pl-0 pr-1"
+                                        >
+                                            Title
+                                        </button>
+
+                                        {this.orderbyColumnIcon("title")}
+                                    </div>
+                                </th>
+                                <th>Content</th>
+                                <th>Category</th>
+                                <th>Created At</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {this.state.posts.data && this.renderPosts()}
+                        </tbody>
+                    </table>
+                    <div className="row mt-3">
+                        <div className="col-md-4">
+                            {this.state.posts?.meta && this.renderPaginator()}
                         </div>
-
-                        <div className="card-body">
-                            <table className="table align-middle mb-0 bg-white">
-                                <thead className="bg-light">
-                                    <tr>
-                                        <th>
-                                            <div
-                                                onClick={() =>
-                                                    this.updateOrder("id")
-                                                }
-                                                className="btn-group"
-                                                role="group"
-                                            >
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-xs btn-link py-0 pl-0 pr-1"
-                                                >
-                                                    ID
-                                                </button>
-                                                {this.orderbyColumnIcon("id")}
-                                            </div>
-                                        </th>
-                                        <th>
-                                            <div
-                                                onClick={() =>
-                                                    this.updateOrder("title")
-                                                }
-                                                className="btn-group"
-                                                role="group"
-                                            >
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-xs btn-link py-0 pl-0 pr-1"
-                                                >
-                                                    Title
-                                                </button>
-
-                                                {this.orderbyColumnIcon(
-                                                    "title"
-                                                )}
-                                            </div>
-                                        </th>
-                                        <th>Content</th>
-                                        <th>Category</th>
-                                        <th>Created At</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {this.state.posts.data &&
-                                        this.renderPosts()}
-                                </tbody>
-                            </table>
-                            <div className="row mt-3">
-                                <div className="col-md-4">
-                                    {this.state.posts?.meta &&
-                                        this.renderPaginator()}
-                                </div>
-                                <div className="col-md-8 d-flex justify-content-end">
-                                    {this.state.posts.meta?.links &&
-                                        this.renderPaginatorLinks()}
-                                </div>
-                            </div>
+                        <div className="col-md-8 d-flex justify-content-end">
+                            {this.state.posts.meta?.links &&
+                                this.renderPaginatorLinks()}
                         </div>
                     </div>
                 </div>
-            </div>
+            </Layout>
         );
     }
 }
