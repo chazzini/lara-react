@@ -6,19 +6,74 @@ class Home extends Component {
 
         this.state = {
             posts: [],
+            categories: [],
+            query: {
+                page: 1,
+                category_id: "",
+                order_column: "id",
+                order_direction: "asc",
+            },
         };
     }
 
-    fetchPosts(page = 1) {
-        axios.get("/api/posts/", { params: { page } }).then((response) =>
+    fetchPosts() {
+        axios
+            .get("/api/posts/", { params: this.state.query })
+            .then((response) =>
+                this.setState({
+                    posts: response.data,
+                })
+            );
+    }
+    fetchCategories() {
+        axios.get("/api/categories/").then((response) =>
             this.setState({
-                posts: response.data,
+                categories: response.data.data,
             })
         );
     }
 
     componentDidMount() {
         this.fetchPosts();
+        this.fetchCategories();
+    }
+    // componentDidUpdate() {
+    //     this.fetchPosts();
+    // }
+
+    renderCategories() {
+        return (
+            <select
+                className="form-control"
+                onChange={(event) => {
+                    this.setFilterCategory(event.target.value);
+                }}
+            >
+                <option value=""> -- filter by category --</option>
+                {this.state.categories.map((category) => {
+                    return (
+                        <option key={category.id} value={category.id}>
+                            {category.name}
+                        </option>
+                    );
+                })}
+            </select>
+        );
+    }
+
+    setFilterCategory(id) {
+        console.log(id);
+        this.setState(
+            {
+                query: {
+                    page: 1,
+                    category_id: id,
+                },
+            },
+            () => {
+                this.fetchPosts();
+            }
+        );
     }
 
     renderPosts() {
@@ -47,14 +102,27 @@ class Home extends Component {
         if (url) {
             const fullUrl = new URL(url);
             const page = fullUrl.searchParams.get("page");
-            this.fetchPosts(page);
+
+            console.log(page);
+
+            this.setState(
+                {
+                    query: {
+                        ...this.state.query,
+                        page: page,
+                    },
+                },
+                () => {
+                    this.fetchPosts();
+                }
+            );
         }
     }
     renderPaginator() {
         return (
             <p>
-                showing page {this.state.posts.meta.current_page} out of{" "}
-                {this.state.posts.meta.last_page}
+                Showing {this.state.posts.meta.current_page} to{" "}
+                {this.state.posts.meta.to} of {this.state.posts.meta.total}
             </p>
         );
     }
@@ -82,19 +150,94 @@ class Home extends Component {
         );
     }
 
+    orderbyColumnIcon(column) {
+        let icon = "fa-sort-up";
+
+        if (this.state.query.order_column === column) {
+            icon =
+                this.state.query.order_direction === "asc" ? (
+                    <i className="fas fa-sort-up"></i>
+                ) : (
+                    <i className="fas fa-sort-down"></i>
+                );
+        }
+
+        return <i className={`fas ${icon}`}></i>;
+    }
+
+    updateOrder(column) {
+        let direction = "asc";
+        if (this.state.query.order_column === column) {
+            direction =
+                this.state.query.order_direction == "asc" ? "desc" : "asc";
+        }
+
+        this.setState(
+            {
+                query: {
+                    page: 1,
+                    category_id: "",
+                    order_column: column,
+                    order_direction: direction,
+                },
+            },
+            this.fetchPosts()
+        );
+    }
+
     render() {
         return (
             <div className="row justify-content-center">
                 <div className="col-md-12">
-                    <div className="card">
-                        <div className="card-header">Table</div>
+                    <div className="card container">
+                        <div className="card-header row">
+                            <div className="col-md-4">
+                                {this.state.categories &&
+                                    this.renderCategories()}
+                            </div>
+                        </div>
 
                         <div className="card-body">
                             <table className="table align-middle mb-0 bg-white">
                                 <thead className="bg-light">
                                     <tr>
-                                        <th>Name</th>
-                                        <th>Title</th>
+                                        <th>
+                                            <div
+                                                onClick={() =>
+                                                    this.updateOrder("id")
+                                                }
+                                                className="btn-group"
+                                                role="group"
+                                            >
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-xs btn-link py-0 pl-0 pr-1"
+                                                >
+                                                    ID
+                                                </button>
+                                                {this.orderbyColumnIcon("id")}
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div
+                                                onClick={() =>
+                                                    this.updateOrder("title")
+                                                }
+                                                className="btn-group"
+                                                role="group"
+                                            >
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-xs btn-link py-0 pl-0 pr-1"
+                                                >
+                                                    Title
+                                                </button>
+
+                                                {this.orderbyColumnIcon(
+                                                    "title"
+                                                )}
+                                            </div>
+                                        </th>
                                         <th>Content</th>
                                         <th>Category</th>
                                         <th>Created At</th>

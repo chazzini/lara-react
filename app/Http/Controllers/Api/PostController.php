@@ -12,9 +12,25 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return PostResource::collection(Post::with('category')->paginate(10));
+        $orderByDirection = $request->input('order_direction','desc');
+        $orderByColumn = $request->input('order_column','id');
+
+        if(!in_array($orderByDirection, ['asc','desc'])) {
+            $orderByDirection = 'asc';
+        }
+
+        if(!in_array($orderByColumn, ['id','title'])) {
+            $orderByColumn = 'id';
+        }
+
+        return PostResource::collection(Post::with('category')
+        ->when($request->filled('category_id'), function ($query) use ($request) {
+            return $query->where('category_id', $request->category_id);
+        })
+        ->orderBy($orderByColumn,$orderByDirection)
+        ->paginate(10));
     }
 
     /**
