@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import Layout from "./Pages/layout/Layout";
 
+import SelectCategories from "./Pages/partials/SelectCategory";
+
 class Home extends Component {
     constructor(props) {
         super(props);
@@ -42,33 +44,13 @@ class Home extends Component {
     //     this.fetchPosts();
     // }
 
-    renderCategories() {
-        return (
-            <select
-                className="form-control"
-                onChange={(event) => {
-                    this.setFilterCategory(event.target.value);
-                }}
-            >
-                <option value=""> -- filter by category --</option>
-                {this.state.categories.map((category) => {
-                    return (
-                        <option key={category.id} value={category.id}>
-                            {category.name}
-                        </option>
-                    );
-                })}
-            </select>
-        );
-    }
-
-    setFilterCategory(id) {
-        console.log(id);
+    setFilterCategory(event) {
         this.setState(
             {
                 query: {
+                    ...this.state.query,
                     page: 1,
-                    category_id: id,
+                    category_id: event.target.value,
                 },
             },
             () => {
@@ -188,7 +170,18 @@ class Home extends Component {
 
     render() {
         return (
-            <Layout header={this.state.categories && this.renderCategories()}>
+            <Layout
+                header={
+                    this.state.categories && (
+                        <SelectCategories
+                            categories={this.state.categories}
+                            selectedFunc={(event) => {
+                                this.setFilterCategory(event);
+                            }}
+                        />
+                    )
+                }
+            >
                 <div className="card-body">
                     <table className="table align-middle mb-0 bg-white">
                         <thead className="bg-light">
