@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Layout from "./layout/Layout";
 import SelectCategories from "./partials/SelectCategory";
 import { useNavigate, useParams } from "react-router-dom";
+import Swal from "sweetalert2";
 
 export const EditPostWithNavigation = (props) => {
     const navigate = useNavigate();
@@ -96,9 +97,20 @@ class EditPost extends Component {
 
         axios
             .put(`/api/posts/${this.state.id}`, this.state.query)
-            .then((response) => this.props.navigate("/"))
+            .then((response) => {
+                Swal.fire({
+                    title: "Success",
+                    icon: "success",
+                    text: "Post successfully updated",
+                });
+                this.props.navigate("/");
+            })
             .catch((error) => {
-                console.log(error);
+                Swal.fire({
+                    title: "Error!",
+                    icon: "error",
+                    text: error.response.data.message,
+                });
                 this.setState({ errors: error.response?.data.errors });
             })
             .finally(() =>

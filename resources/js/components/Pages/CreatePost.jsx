@@ -86,9 +86,20 @@ class CreatePost extends Component {
 
         axios
             .post("/api/posts", postData)
-            .then((response) => this.props.navigate("/"))
+            .then((response) => {
+                Swal.fire({
+                    title: "Success",
+                    icon: "success",
+                    text: "Post successfully created",
+                });
+                this.props.navigate("/");
+            })
             .catch((error) => {
-                console.log(error);
+                Swal.fire({
+                    title: "Error!",
+                    icon: "error",
+                    text: error.response.data.message,
+                });
                 this.setState({ errors: error.response?.data.errors });
             })
             .finally(() =>
