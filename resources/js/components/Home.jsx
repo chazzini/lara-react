@@ -3,6 +3,7 @@ import Layout from "./Pages/layout/Layout";
 
 import SelectCategories from "./Pages/partials/SelectCategory";
 import { NavLink } from "react-router-dom";
+import Swal from "sweetalert2";
 
 class Home extends Component {
     constructor(props) {
@@ -16,6 +17,7 @@ class Home extends Component {
                 category_id: "",
                 order_column: "id",
                 order_direction: "asc",
+                global: "",
             },
         };
     }
@@ -28,6 +30,38 @@ class Home extends Component {
                     posts: response.data,
                 })
             );
+    }
+
+    deletePost(event) {
+        Swal.fire({
+            title: "Are you sure want to delete this post ?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                axios
+                    .delete("/api/posts/" + event.target.value)
+                    .then((response) => {
+                        Swal.fire({
+                            title: "Deleted!",
+                            text: "Your post has been deleted.",
+                            icon: "success",
+                        });
+                        this.fetchPosts();
+                    })
+                    .catch(() => {
+                        Swal.fire({
+                            title: "Oops!",
+                            text: "somthing went wrong ",
+                            icon: "error",
+                        });
+                    });
+            }
+        });
     }
     fetchCategories() {
         axios.get("/api/categories/").then((response) =>
@@ -59,6 +93,20 @@ class Home extends Component {
             }
         );
     }
+    filterGlobal(event) {
+        this.setState(
+            {
+                query: {
+                    ...this.state.query,
+                    page: 1,
+                    global: event.target.value,
+                },
+            },
+            () => {
+                this.fetchPosts();
+            }
+        );
+    }
 
     renderPosts() {
         return this.state.posts.data.map((post) => (
@@ -78,6 +126,14 @@ class Home extends Component {
                     >
                         Edit
                     </NavLink>
+                    <button
+                        type="button"
+                        className="btn btn-danger"
+                        value={post.id}
+                        onClick={(event) => this.deletePost(event)}
+                    >
+                        Delete
+                    </button>
                 </td>
             </tr>
         ));
@@ -184,6 +240,12 @@ class Home extends Component {
                     )
                 }
             >
+                <input
+                    type="text"
+                    value={this.state.query.global}
+                    onChange={(event) => this.filterGlobal(event)}
+                    placeholder="search..."
+                />
                 <div className="card-body">
                     <table className="table align-middle mb-0 bg-white">
                         <thead className="bg-light">

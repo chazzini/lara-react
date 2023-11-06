@@ -18,6 +18,8 @@ class PostController extends Controller
         $orderByDirection = $request->input('order_direction','desc');
         $orderByColumn = $request->input('order_column','id');
 
+        $filterable = ['id','content','title'];
+
         if(!in_array($orderByDirection, ['asc','desc'])) {
             $orderByDirection = 'asc';
         }
@@ -28,7 +30,18 @@ class PostController extends Controller
 
         return PostResource::collection(Post::with('category')
         ->when($request->filled('category_id'), function ($query) use ($request) {
-            return $query->where('category_id', $request->category_id);
+             $query->where('category_id', $request->category_id);
+        })
+        ->when($request->filled('global'), function ($query) use ($request, $filterable)
+        {
+            foreach($filterable as $column) {
+                if($column === $filterable[0]){
+                    $query->where($column,'like','%'. $request->global.'%');
+                }else{
+
+                    $query->orWhere($column,'like','%'. $request->global.'%');
+                }
+            }
         })
         ->orderBy($orderByColumn,$orderByDirection)
         ->paginate(10));
@@ -76,8 +89,9 @@ class PostController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Post $post)
     {
-        //
+            $post->delete();
+            return response()->noContent();
     }
 }
