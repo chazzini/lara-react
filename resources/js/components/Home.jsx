@@ -4,7 +4,7 @@ import Layout from "./Pages/layout/Layout";
 import SelectCategories from "./Pages/partials/SelectCategory";
 import { NavLink } from "react-router-dom";
 import Swal from "sweetalert2";
-
+import { debounce } from "lodash";
 class Home extends Component {
     constructor(props) {
         super(props);
@@ -20,6 +20,10 @@ class Home extends Component {
                 global: "",
             },
         };
+
+        this.debounceFetchPosts = debounce(() => {
+            this.fetchPosts();
+        }, 500);
     }
 
     fetchPosts() {
@@ -51,7 +55,7 @@ class Home extends Component {
                             text: "Your post has been deleted.",
                             icon: "success",
                         });
-                        this.fetchPosts();
+                        this.debounceFetchPosts();
                     })
                     .catch(() => {
                         Swal.fire({
@@ -72,11 +76,11 @@ class Home extends Component {
     }
 
     componentDidMount() {
-        this.fetchPosts();
+        this.debounceFetchPosts();
         this.fetchCategories();
     }
     // componentDidUpdate() {
-    //     this.fetchPosts();
+    //     this.debounceFetchPosts()
     // }
 
     setFilterCategory(event) {
@@ -89,7 +93,7 @@ class Home extends Component {
                 },
             },
             () => {
-                this.fetchPosts();
+                this.debounceFetchPosts();
             }
         );
     }
@@ -103,7 +107,7 @@ class Home extends Component {
                 },
             },
             () => {
-                this.fetchPosts();
+                this.debounceFetchPosts();
             }
         );
     }
@@ -154,7 +158,7 @@ class Home extends Component {
                     },
                 },
                 () => {
-                    this.fetchPosts();
+                    this.debounceFetchPosts();
                 }
             );
         }
