@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Layout from "./Pages/layout/Layout";
 
 import SelectCategories from "./Pages/partials/SelectCategory";
+import { NavLink } from "react-router-dom";
 
 class Home extends Component {
     constructor(props) {
@@ -70,12 +71,13 @@ class Home extends Component {
                 <td>{post.category.name}</td>
                 <td>{post.created_at}</td>
                 <td>
-                    <button
+                    <NavLink
                         type="button"
                         className="btn btn-link btn-sm btn-rounded"
+                        to={`post/edit/${post.id}`}
                     >
                         Edit
-                    </button>
+                    </NavLink>
                 </td>
             </tr>
         ));

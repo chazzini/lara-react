@@ -41,6 +41,17 @@ class PostController extends Controller
     {
 
         $post = Post::create($request->validated());
+
+        //check if api recieves file
+        if($request->hasFile('thumbnail')){
+
+           $fileName = time().'_'.$request->file('thumbnail')->getClientOriginalName();
+            $filePath = $request->file('thumbnail')->storeAs('uploads', $fileName, 'public');
+            $destinationPath = 'uploads';
+            $request->file('thumbnail')->move($destinationPath,$fileName);
+        }
+
+
         return new PostResource($post);
     }
 
@@ -55,9 +66,11 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(StorePostRequest $request, Post $post)
     {
-        //
+        $post->update($request->validated());
+
+        return new PostResource($post);
     }
 
     /**

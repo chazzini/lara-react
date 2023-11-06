@@ -24,7 +24,8 @@ class StorePostRequest extends FormRequest
         return [
             'title'=>'required',
             'content'=>'required',
-            'category_id'=>['required','integer']
+            'category_id'=>['required','integer'],
+            'thumbnail'=>'nullable|file|mimes:csv,jpg,png,jpeg|max:2048'
         ];
     }
 

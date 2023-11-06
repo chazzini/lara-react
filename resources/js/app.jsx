@@ -7,6 +7,7 @@ import CreatePost, {
     CreatePostWithNavigation,
 } from "./components/Pages/CreatePost";
 import NotFound from "./components/Pages/errors/NotFound";
+import { EditPostWithNavigation } from "./components/Pages/EditPost";
 
 const app = document.getElementById("app");
 
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
     {
         path: "/post/create",
         element: <CreatePostWithNavigation />,
+    },
+    {
+        path: "/post/edit/:id",
+        element: <EditPostWithNavigation />,
     },
     {
         path: "*",

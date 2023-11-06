@@ -1,23 +1,24 @@
 import React, { Component } from "react";
 import Layout from "./layout/Layout";
 import SelectCategories from "./partials/SelectCategory";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-export const CreatePostWithNavigation = (props) => {
+export const EditPostWithNavigation = (props) => {
     const navigate = useNavigate();
-    return <CreatePost navigate={navigate}></CreatePost>;
+    const params = useParams();
+    return <EditPost {...props} navigate={navigate} params={params}></EditPost>;
 };
 
-class CreatePost extends Component {
+class EditPost extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            id: this.props.params.id,
             categories: [],
             query: {
                 title: "",
                 content: "",
                 category_id: "",
-                thumbnail: "",
             },
             errors: [],
             isloading: false,
@@ -41,14 +42,7 @@ class CreatePost extends Component {
             },
         }));
     }
-    updateThumbnail(event) {
-        this.setState((prevState) => ({
-            query: {
-                ...this.state.query,
-                thumbnail: event.target.files[0],
-            },
-        }));
-    }
+
     updateCategoryId(event) {
         this.setState((prevState) => ({
             query: {
@@ -65,12 +59,34 @@ class CreatePost extends Component {
             })
         );
     }
+    fetchPost() {
+        this.setState({
+            isloading: true,
+        });
+        axios
+            .get(`/api/posts/${this.state.id}`)
+            .then((response) => {
+                this.setState({
+                    query: {
+                        title: response.data?.data?.title,
+                        content: response.data?.data?.content,
+                        category_id: response.data?.data?.category.id,
+                    },
+                });
+            })
+            .finally(() =>
+                this.setState({
+                    isloading: false,
+                })
+            );
+    }
 
     componentDidMount() {
+        this.fetchPost();
         this.fetchCategories();
     }
 
-    createPost(event) {
+    updatePost(event) {
         if (this.state.isloading) return;
 
         this.setState({
@@ -78,14 +94,8 @@ class CreatePost extends Component {
             isloading: true,
         });
 
-        let postData = new FormData();
-        postData.append("title", this.state.query.title);
-        postData.append("content", this.state.query.content);
-        postData.append("category_id", this.state.query.category_id);
-        postData.append("thumbnail", this.state.query.thumbnail);
-
         axios
-            .post("/api/posts", postData)
+            .put(`/api/posts/${this.state.id}`, this.state.query)
             .then((response) => this.props.navigate("/"))
             .catch((error) => {
                 console.log(error);
@@ -112,12 +122,12 @@ class CreatePost extends Component {
 
     render() {
         return (
-            <Layout header="Create Post">
+            <Layout header="Edit Post">
                 <div className="card-body">
                     <form
                         onSubmit={(event) => {
                             event.preventDefault();
-                            this.createPost(event);
+                            this.updatePost(event);
                         }}
                     >
                         <div className="mb-3">
@@ -130,7 +140,7 @@ class CreatePost extends Component {
                                 id="title"
                                 autoFocus
                                 onChange={(event) => this.updateTitle(event)}
-                                value={this.state.title}
+                                value={this.state.query.title}
                             />
                             {this.errorMessage("title")}
                         </div>
@@ -144,7 +154,7 @@ class CreatePost extends Component {
                                 id="textarea"
                                 rows="3"
                                 onChange={(event) => this.updateContent(event)}
-                                value={this.state.content}
+                                value={this.state.query.content}
                             ></textarea>
                             {this.errorMessage("content")}
                         </div>
@@ -157,26 +167,13 @@ class CreatePost extends Component {
                                 selectedFunc={(event) => {
                                     this.updateCategoryId(event);
                                 }}
+                                selected_id={this.state.query.category_id}
                             />
                             {this.errorMessage("category_id")}
                         </div>
-                        <div className="mb-3">
-                            <label for="thumbnail" className="form-label">
-                                Thumbnail
-                            </label>
-                            <input
-                                type="file"
-                                className="form-control"
-                                id="thumbnail"
-                                autoFocus
-                                onChange={(event) =>
-                                    this.updateThumbnail(event)
-                                }
-                            />
-                            {this.errorMessage("thumbnail")}
-                        </div>
+
                         <button type="submit" className="btn btn-primary">
-                            {this.state.isloading ? "...loading" : "Submit"}
+                            {this.state.isloading ? "...loading" : "Update"}
                         </button>
                     </form>
                 </div>
@@ -185,4 +182,4 @@ class CreatePost extends Component {
     }
 }
 
-export default CreatePost;
+export default EditPost;
