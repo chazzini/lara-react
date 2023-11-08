@@ -232,18 +232,7 @@ class Home extends Component {
 
     render() {
         return (
-            <Layout
-                header={
-                    this.state.categories && (
-                        <SelectCategories
-                            categories={this.state.categories}
-                            selectedFunc={(event) => {
-                                this.setFilterCategory(event);
-                            }}
-                        />
-                    )
-                }
-            >
+            <>
                 <input
                     type="text"
                     value={this.state.query.global}
@@ -307,7 +296,7 @@ class Home extends Component {
                         </div>
                     </div>
                 </div>
-            </Layout>
+            </>
         );
     }
 }

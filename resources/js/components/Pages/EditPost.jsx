@@ -134,7 +134,7 @@ class EditPost extends Component {
 
     render() {
         return (
-            <Layout header="Edit Post">
+            <>
                 <div className="card-body">
                     <form
                         onSubmit={(event) => {
@@ -189,7 +189,7 @@ class EditPost extends Component {
                         </button>
                     </form>
                 </div>
-            </Layout>
+            </>
         );
     }
 }

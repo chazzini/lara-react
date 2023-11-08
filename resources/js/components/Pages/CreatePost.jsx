@@ -123,7 +123,7 @@ class CreatePost extends Component {
 
     render() {
         return (
-            <Layout header="Create Post">
+            <>
                 <div className="card-body">
                     <form
                         onSubmit={(event) => {
@@ -191,7 +191,7 @@ class CreatePost extends Component {
                         </button>
                     </form>
                 </div>
-            </Layout>
+            </>
         );
     }
 }

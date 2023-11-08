@@ -1,11 +1,24 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
+import React, { useEffect } from "react";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 const Layout = (props) => {
+    const navigate = useNavigate();
+    const handleLogout = (event) => {
+        axios.post("/api/logout").then((response) => navigate("/login"));
+    };
+
+    useEffect(() => {
+        axios.post("/api/posts").catch((error) => {
+            if (error.response.status === 401) {
+                navigate("/login");
+            }
+        });
+    });
+
     return (
         <>
             <nav className="navbar navbar-expand-md navbar-light bg-white shadow-sm">
                 <div className="container">
-                    <NavLink to={"/"} className="navbar-brand">
+                    <NavLink to={"/posts"} className="navbar-brand">
                         React Laravel App
                     </NavLink>
 
@@ -21,7 +34,7 @@ const Layout = (props) => {
                                             ? "active nav-link"
                                             : "nav-link"
                                     }
-                                    to={"/"}
+                                    to={"/posts"}
                                 >
                                     Home
                                 </NavLink>
@@ -33,12 +46,20 @@ const Layout = (props) => {
                                             ? "active nav-link"
                                             : "nav-link"
                                     }
-                                    to={"/post/create"}
+                                    to={"/posts/create"}
                                 >
                                     Create Post
                                 </NavLink>
                             </li>
                         </ul>
+
+                        <button
+                            className="my-2 my-lg-0 btn btn-outline-danger navbar-text"
+                            type="button"
+                            onClick={(event) => handleLogout(event)}
+                        >
+                            Logout
+                        </button>
                     </div>
                 </div>
             </nav>
@@ -50,7 +71,7 @@ const Layout = (props) => {
                             <div className="card-header row">
                                 <div className="col-md-4">{props.header}</div>
                             </div>
-                            {props.children}
+                            <Outlet />
                         </div>
                     </div>
                 </div>
