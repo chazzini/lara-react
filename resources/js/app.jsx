@@ -29,7 +29,7 @@ const router = createBrowserRouter(
                 <Route path="/posts/create" Component={CreatePost} />
                 <Route path="/posts/edit/:id" Component={EditPost} />
             </Route>
-            <Route path="/" Component={AuthLayout}>
+            <Route Component={AuthLayout}>
                 <Route path="login" Component={Login} />
                 <Route path="register" Component={Register} />
             </Route>

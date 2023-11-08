@@ -15,6 +15,7 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('post_view');
         $orderByDirection = $request->input('order_direction','desc');
         $orderByColumn = $request->input('order_column','id');
 
@@ -52,6 +53,7 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
+        $this->authorize('post_create');
 
         $post = Post::create($request->validated());
 
@@ -73,6 +75,7 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
+        $this->authorize('post_view');
         return new PostResource($post);
     }
 
@@ -81,6 +84,7 @@ class PostController extends Controller
      */
     public function update(StorePostRequest $request, Post $post)
     {
+        $this->authorize('post_edit');
         $post->update($request->validated());
 
         return new PostResource($post);
@@ -91,6 +95,7 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
+        $this->authorize('post_delete');
             $post->delete();
             return response()->noContent();
     }
