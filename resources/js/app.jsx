@@ -18,7 +18,8 @@ import Layout from "./components/Pages/layout/Layout";
 import AuthLayout from "./components/Pages/layout/AuthLayout";
 import Login from "./components/Pages/auth/Login";
 import Register from "./components/Pages/auth/Register";
-
+import { AbilityContext } from "./Abilities/Can";
+import Ability from "./Abilities/Ability";
 const app = document.getElementById("app");
 
 const router = createBrowserRouter(
@@ -38,4 +39,8 @@ const router = createBrowserRouter(
     )
 );
 
-ReactDOM.createRoot(app).render(<RouterProvider router={router} />);
+ReactDOM.createRoot(app).render(
+    <AbilityContext.Provider value={Ability}>
+        <RouterProvider router={router} />
+    </AbilityContext.Provider>
+);

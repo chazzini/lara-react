@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import Layout from "./layout/Layout";
 import SelectCategories from "./partials/SelectCategory";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";

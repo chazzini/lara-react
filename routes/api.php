@@ -25,4 +25,17 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::apiResource('posts',\App\Http\Controllers\Api\PostController::class);
     Route::apiResource('categories',\App\Http\Controllers\Api\CategoryController::class);
     Route::post('logout', [\App\Http\Controllers\AuthController::class,'destroy']);
+
+    Route::get('abilities',function(Request $request){
+        return $request->user()->roles()->with('permissions')
+        ->get()
+        ->pluck('permissions')
+        ->flatten()
+        ->pluck('name')
+         ->unique()
+        ->values()
+        ->toArray()
+        ;
+
+    });
 });

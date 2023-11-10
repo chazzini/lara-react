@@ -1,18 +1,28 @@
-import React, { useState } from "react";
+import { Ability, AbilityBuilder } from "@casl/ability";
+import React, { useContext, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import { AbilityContext } from "../../../Abilities/Can";
 
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState(false);
     const navigate = useNavigate();
+    const ability = useContext(AbilityContext);
 
     const handleSubmit = (event) => {
         event.preventDefault();
         setError(false);
         axios
             .post("/api/login", { email, password })
-            .then((response) => navigate("/posts"))
+            .then((response) => {
+                axios.get("/api/abilities").then((response) => {
+                    const { can, rules } = new AbilityBuilder(Ability);
+                    can(response.data);
+                    ability.update(rules);
+                });
+                navigate("/posts");
+            })
             .catch((error) => setError(true));
     };
 
